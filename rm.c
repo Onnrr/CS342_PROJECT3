@@ -25,9 +25,22 @@ pthread_cond_t cv = PTHREAD_COND_INITIALIZER;
 
 // end of global variables
 
+
+// only call inside lock
+int getThread(int selfId) {
+    int res = -1;
+    for (int i = 0; i < N; i++) {
+        if (threads[i] == selfId)
+            res = i;
+    }
+
+    return res;
+}
+
 int rm_thread_started(int tid) {
     int ret = 0;
 
+    pthread_mutex_lock(&lock);
     if (tid < N) {
         // thread is alive
         threads[tid] = pthread_self();
@@ -35,20 +48,24 @@ int rm_thread_started(int tid) {
     else {
         ret = -1;
     }
-
+    pthread_mutex_unlock(&lock);
     return (ret);
 }
 
 
 int rm_thread_ended() {
     int ret = 0;
+
+    pthread_mutex_lock(&lock);
     int id = getThread(pthread_self());
+
     if (threads[id] == -1) {
         ret = -1;
     }
     else {
         threads[id] = 0;
     }
+    pthread_mutex_unlock(&lock);
     return (ret);
 }
 
@@ -56,6 +73,7 @@ int rm_thread_ended() {
 int rm_claim (int claim[]) {
     int ret = 0;
 
+    pthread_mutex_lock(&lock);
     if (DA) {
         int id = getThread(pthread_self());
         for (int i = 0; i < M; i ++) {
@@ -70,6 +88,7 @@ int rm_claim (int claim[]) {
     else {
         ret = -1;
     }
+    pthread_mutex_unlock(&lock);
     return(ret);
 }
 
@@ -78,6 +97,7 @@ int rm_init(int p_count, int r_count, int r_exist[],  int avoid) {
     int i;
     int ret = 0;
     
+    pthread_mutex_lock(&lock);
     DA = avoid;
     N = p_count;
     M = r_count;
@@ -94,6 +114,7 @@ int rm_init(int p_count, int r_count, int r_exist[],  int avoid) {
         ExistingRes[i] = r_exist[i];
     }
     // resources initialized (created)
+    pthread_mutex_unlock(&lock);
 
     return  (ret);
 }
@@ -102,7 +123,7 @@ int rm_init(int p_count, int r_count, int r_exist[],  int avoid) {
 int rm_request (int request[])
 {
     int ret = 0;
-
+    
     if (DA) {
         int finish[N];
         for (int i = 0; i < N; i++) {
@@ -192,15 +213,39 @@ int rm_detection()
 
 void rm_print_state (char hmsg[])
 {
-    return;
-}
+    pthread_mutex_lock(&lock);
 
-int getThread(int selfId) {
-    int res = -1;
-    for (int i = 0; i < N; i++) {
-        if (threads[i] == selfId)
-            res = threads[i];
+    printf("##########################\n");
+    printf("%s\n", hmsg);
+    printf("##########################\n");
+
+    printf("Exist:\n%4s", "");
+    for (int i = 0; i < M; i++) {
+        char temp[5] = "";
+        sprintf(temp, "R%d", i);
+        printf("%4s", temp);
+    }
+    printf("\n%4s", "");
+    for (int i = 0; i < M; i++) {
+        printf("%4d", ExistingRes[i]);
     }
 
-    return res;
+    printf("\n\nAvailable:\n%4s", "");
+    for (int i = 0; i < M; i++) {
+        char temp[5] = "";
+        sprintf(temp, "R%d", i);
+        printf("%4s", temp);
+    }
+    printf("\n%4s", "");
+    for (int i = 0; i < M; i++) {
+        int sum = 0;
+        for (int j = 0; j < N; j++) {
+            sum = sum + Allocation[j][i]; 
+        }
+        printf("%4d", (ExistingRes[i] - sum));
+    }
+    
+    printf("\n");
+    pthread_mutex_unlock(&lock);
+    return;
 }
