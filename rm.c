@@ -123,7 +123,7 @@ int rm_init(int p_count, int r_count, int r_exist[],  int avoid) {
 int rm_request (int request[])
 {
     int ret = 0;
-    
+    /*
     if (DA) {
         int finish[N];
         for (int i = 0; i < N; i++) {
@@ -190,7 +190,7 @@ int rm_request (int request[])
             pthread_mutex_unlock(&lock);
         }
     }
-    
+    */
     return(ret);
 }
 
@@ -219,7 +219,7 @@ void rm_print_state (char hmsg[])
     printf("%s\n", hmsg);
     printf("##########################\n");
 
-    printf("Exist:\n%4s", "");
+    printf("\nExist:\n%4s", "");
     for (int i = 0; i < M; i++) {
         char temp[5] = "";
         sprintf(temp, "R%d", i);
@@ -244,8 +244,54 @@ void rm_print_state (char hmsg[])
         }
         printf("%4d", (ExistingRes[i] - sum));
     }
+
+    printf("\n\nAllocation:\n%4s", "");
+    for (int i = 0; i < M; i++) {
+        char temp[5] = "";
+        sprintf(temp, "R%d", i);
+        printf("%4s", temp);
+    }
+    for (int i = 0; i < N; i++) {
+        char temp[5] = "";
+        sprintf(temp, "T%d:", i);
+        printf("\n%-4s", temp);
+        for (int j = 0; j < M; j++) {
+            printf("%4d", Allocation[i][j]);
+        }
+    }
     
-    printf("\n");
+    //request ????
+
+    printf("\n\nMaxDemand:\n%4s", "");
+    for (int i = 0; i < M; i++) {
+        char temp[5] = "";
+        sprintf(temp, "R%d", i);
+        printf("%4s", temp);
+    }
+    for (int i = 0; i < N; i++) {
+        char temp[5] = "";
+        sprintf(temp, "T%d:", i);
+        printf("\n%-4s", temp);
+        for (int j = 0; j < M; j++) {
+            printf("%4d", MaxDemand[i][j]);
+        }
+    }
+
+    printf("\n\nNeed:\n%4s", "");
+    for (int i = 0; i < M; i++) {
+        char temp[5] = "";
+        sprintf(temp, "R%d", i);
+        printf("%4s", temp);
+    }
+    for (int i = 0; i < N; i++) {
+        char temp[5] = "";
+        sprintf(temp, "T%d:", i);
+        printf("\n%-4s", temp);
+        for (int j = 0; j < M; j++) {
+            printf("%4d", Need[i][j]);
+        }
+    }
+    printf("\n\n");
     pthread_mutex_unlock(&lock);
     return;
 }
