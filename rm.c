@@ -125,19 +125,17 @@ int rm_init(int p_count, int r_count, int r_exist[],  int avoid) {
 
 
 int rm_request (int request[]) {
-    int ret = 0;
     int safe = 1;
     int available = 1;
     pthread_mutex_lock(&lock);
-
+    int id = getThread(pthread_self());
     for (int i = 0; i < M; i++) {
-        if (request[i] > ExistingRes[i] || request[i] < 0) {
-            pthread_mutex_lock(&lock);
+        if (request[i] > ExistingRes[i] || request[i] < 0 || request[i] > Need[id][i]) {
+            pthread_mutex_unlock(&lock);
             return -1;
         }
     }
     
-    int id = getThread(pthread_self());
     for (int i = 0; i < M; i++) {
         Request[id][i] = request[i];
     }
@@ -219,7 +217,6 @@ int rm_request (int request[]) {
 
 
 int rm_release (int release[]) {
-    int ret = 0;
     pthread_mutex_lock(&lock);
     int id = getThread(pthread_self());
     for (int i = 0; i < M; i++) {
