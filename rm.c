@@ -174,7 +174,6 @@ int is_safe() {
 }
 
 int rm_request (int request[]) {
-    printf("\nRM\n");
     pthread_mutex_lock(&lock);
     int id = getThread(pthread_self());
     for (int i = 0; i < M; i++) {
@@ -230,7 +229,6 @@ int rm_request (int request[]) {
         } while (safe == 0);
     }
     else {
-        printf("\nAA\n");
         for (int i = 0; i < M; i++) {
             Available[i] -= request[i];
             Allocation[id][i] += request[i];
