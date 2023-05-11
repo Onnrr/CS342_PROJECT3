@@ -245,8 +245,6 @@ int rm_request (int request[]) {
 }
 
 
-
-
 int rm_release (int release[]) {
     pthread_mutex_lock(&lock);
     int id = getThread(pthread_self());
@@ -337,22 +335,28 @@ void rm_print_state (char hmsg[])
     printf("%s\n", hmsg);
     printf("##########################\n");
 
-    printf("\nExist:\n%4s", "");
+    printf("\nExist:");
     for (int i = 0; i < M; i++) {
         char temp[5] = "";
         sprintf(temp, "R%d", i);
-        printf("%4s", temp);
+        if (i == 0)
+            printf("\n%4s%4s", "", temp);
+        else
+            printf("%4s", temp);
     }
     printf("\n%4s", "");
     for (int i = 0; i < M; i++) {
         printf("%4d", ExistingRes[i]);
     }
 
-    printf("\n\nAvailable:\n%4s", "");
+    printf("\n\nAvailable:");
     for (int i = 0; i < M; i++) {
         char temp[5] = "";
         sprintf(temp, "R%d", i);
-        printf("%4s", temp);
+        if (i == 0)
+            printf("\n%4s%4s", "", temp);
+        else
+            printf("%4s", temp);
     }
     printf("\n%4s", "");
     for (int i = 0; i < M; i++) {
@@ -363,11 +367,14 @@ void rm_print_state (char hmsg[])
         printf("%4d", (ExistingRes[i] - sum));
     }
 
-    printf("\n\nAllocation:\n%4s", "");
+    printf("\n\nAllocation:");
     for (int i = 0; i < M; i++) {
         char temp[5] = "";
         sprintf(temp, "R%d", i);
-        printf("%4s", temp);
+        if (i == 0)
+            printf("\n%4s%4s", "", temp);
+        else
+            printf("%4s", temp);
     }
     for (int i = 0; i < N; i++) {
         char temp[5] = "";
@@ -379,11 +386,14 @@ void rm_print_state (char hmsg[])
     }
     
     //request ????
-    printf("\n\nRequest:\n%4s", "");
+    printf("\n\nRequest:");
     for (int i = 0; i < M; i++) {
         char temp[5] = "";
         sprintf(temp, "R%d", i);
-        printf("%4s", temp);
+        if (i == 0)
+            printf("\n%4s%4s", "", temp);
+        else
+            printf("%4s", temp);
     }
     for (int i = 0; i < N; i++) {
         char temp[5] = "";
@@ -394,11 +404,14 @@ void rm_print_state (char hmsg[])
         }
     }
 
-    printf("\n\nMaxDemand:\n%4s", "");
+    printf("\n\nMaxDemand:");
     for (int i = 0; i < M; i++) {
         char temp[5] = "";
         sprintf(temp, "R%d", i);
-        printf("%4s", temp);
+        if (i == 0)
+            printf("\n%4s%4s", "", temp);
+        else
+            printf("%4s", temp);
     }
     for (int i = 0; i < N; i++) {
         char temp[5] = "";
@@ -409,11 +422,14 @@ void rm_print_state (char hmsg[])
         }
     }
 
-    printf("\n\nNeed:\n%4s", "");
+    printf("\n\nNeed:");
     for (int i = 0; i < M; i++) {
         char temp[5] = "";
         sprintf(temp, "R%d", i);
-        printf("%4s", temp);
+        if (i == 0)
+            printf("\n%4s%4s", "", temp);
+        else
+            printf("%4s", temp);
     }
     for (int i = 0; i < N; i++) {
         char temp[5] = "";
