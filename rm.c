@@ -297,7 +297,7 @@ int rm_detection() {
         for (i = 0; i < N; i++) {
             if (finish[i] == 0) {
                 int can_allocate = 1;
-                for (j = 0; j < N; j++) {
+                for (j = 0; j < M; j++) {
                     if (Request[i][j] > work[j]) {
                         can_allocate = 0;
                         break;
